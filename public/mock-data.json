@@ -1,0 +1,148 @@
+{
+    "users": [
+      {
+        "id": 1,
+        "username": "admin",
+        "password": "1234",
+        "token": "fake-jwt-token"
+      }
+    ],
+    "trackings": [
+      {
+        "id": "TRK001",
+        "name": "Package A",
+        "status": "InTransit",
+        "startDate": "2025-08-01",
+        "endDate": null,
+        "cost": 100,
+        "votes": 0
+      },
+      {
+        "id": "TRK002",
+        "name": "Project B",
+        "status": "Delivered",
+        "startDate": "2025-07-20",
+        "endDate": "2025-07-25",
+        "cost": 250,
+        "votes": 3
+      },
+      {
+        "id": "TRK003",
+        "name": "Parcel C",
+        "status": "Delayed",
+        "startDate": "2025-07-28",
+        "endDate": null,
+        "cost": 180,
+        "votes": 1
+      },
+      {
+        "id": "TRK004",
+        "name": "Project D",
+        "status": "Canceled",
+        "startDate": "2025-07-15",
+        "endDate": null,
+        "cost": 0,
+        "votes": 0
+      },
+      {
+        "id": "TRK005",
+        "name": "Shipment E",
+        "status": "InTransit",
+        "startDate": "2025-08-05",
+        "endDate": null,
+        "cost": 150,
+        "votes": 2
+      },
+      {
+        "id": "TRK006",
+        "name": "Express Delivery F",
+        "status": "InTransit",
+        "startDate": "2025-08-10",
+        "endDate": null,
+        "cost": 220,
+        "votes": 1
+      },
+      {
+        "id": "TRK007",
+        "name": "Freight G",
+        "status": "Processing",
+        "startDate": "2025-08-12",
+        "endDate": null,
+        "cost": 175,
+        "votes": 0
+      },
+      {
+        "id": "TRK008",
+        "name": "Cargo H",
+        "status": "Delivered",
+        "startDate": "2025-07-30",
+        "endDate": "2025-08-05",
+        "cost": 300,
+        "votes": 5
+      },
+      {
+        "id": "TRK009",
+        "name": "Logistics I",
+        "status": "InTransit",
+        "startDate": "2025-08-08",
+        "endDate": null,
+        "cost": 190,
+        "votes": 2
+      },
+      {
+        "id": "TRK010",
+        "name": "Shipment J",
+        "status": "Delayed",
+        "startDate": "2025-08-02",
+        "endDate": null,
+        "cost": 210,
+        "votes": 1
+      },
+      {
+        "id": "TRK011",
+        "name": "Package K",
+        "status": "InTransit",
+        "startDate": "2025-08-15",
+        "endDate": null,
+        "cost": 140,
+        "votes": 0
+      },
+      {
+        "id": "TRK012",
+        "name": "Delivery L",
+        "status": "Processing",
+        "startDate": "2025-08-14",
+        "endDate": null,
+        "cost": 160,
+        "votes": 0
+      },
+      {
+        "id": "TRK013",
+        "name": "Freight M",
+        "status": "Delivered",
+        "startDate": "2025-07-25",
+        "endDate": "2025-08-01",
+        "cost": 275,
+        "votes": 4
+      },
+      {
+        "id": "TRK014",
+        "name": "Cargo N",
+        "status": "InTransit",
+        "startDate": "2025-08-11",
+        "endDate": null,
+        "cost": 195,
+        "votes": 1
+      },
+      {
+        "id": "TRK015",
+        "name": "Express O",
+        "status": "Processing",
+        "startDate": "2025-08-13",
+        "endDate": null,
+        "cost": 225,
+        "votes": 0
+      }
+    ],
+    "votes": []
+  }
