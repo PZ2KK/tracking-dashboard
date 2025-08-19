@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import trackingApi from "../api/trackingApi";
 import TrackingList from "../components/TrackingList";
 import Header from "../components/Header";
+import Charts from "../components/Charts";
 
 export default function Dashboard() {
   const [trackings, setTrackings] = useState([]);
@@ -124,11 +125,9 @@ export default function Dashboard() {
         onFilter={handleFilter}
         onSort={handleSort}
       />
-      <div className="flex md:justify-between flex-col">
-      <div className="w-1/2 min-w-[400px] mx-auto px-6">
-          <div className="mb-2 text-sm text-gray-600">
-           rechart
-          </div>
+      <div className="flex flex-col md:flex-row md:justify-between">
+        <div className="w-1/2 min-w-[400px] mx-auto px-6">
+          <Charts />
         </div>
         <div className="w-1/2 min-w-[400px] mx-auto px-6">
           <div className="mb-2 text-sm text-gray-600">

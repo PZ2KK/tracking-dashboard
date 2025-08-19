@@ -78,14 +78,18 @@ const trackingApi = {
   },
 
   vote: async (trackingId, userId, score = 1) => {
-    const response = await axios.post(`${API_BASE}/votes`, { 
-      trackingId, 
-      userId, 
-      score,
-      timestamp: new Date().toISOString()
+    await delay(DELAY_MS);
+    const response = await axios.patch(`${API_BASE}/trackings/${trackingId}`, {
+      votes: { [userId]: score }
     });
-    return response;
-  }
+    return response.data;
+  },
+
+  getChartSummary: async () => {
+    await delay(DELAY_MS);
+    const response = await axios.get(`${API_BASE}/chart/summary`);
+    return response.data;
+  },
 };
 
 export default trackingApi;
