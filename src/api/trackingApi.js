@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE = "https://tracking-backend-mohh.onrender.com/"
+const API_BASE = "https://tracking-backend-mohh.onrender.com"
 const DELAY_MS = 600; // artificial delay to allow skeletons to be visible
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));

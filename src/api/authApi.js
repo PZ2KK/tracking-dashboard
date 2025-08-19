@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE = "https://tracking-backend-mohh.onrender.com/";
+const API_BASE = "https://tracking-backend-mohh.onrender.com";
 
 export const loginApi = async (username, password) => {
   if (!username || !password) {
