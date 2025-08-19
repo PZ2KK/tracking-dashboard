@@ -1,57 +1,69 @@
 import axios from "axios";
 
 const API_BASE = "http://localhost:4000";
+const DELAY_MS = 600; // artificial delay to allow skeletons to be visible
+
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 const trackingApi = {
   getAll: async (params = {}) => {
-    const { _page, _limit, q, status, _sort, _order, ...rest } = params;
-    const queryParams = new URLSearchParams();
-    
-    if (_page) queryParams.append('_page', _page);
-    if (_limit) queryParams.append('_limit', _limit);
-    
-    if (q) {
-      queryParams.append('name_like', q);
-      queryParams.append('id_like', q);
-    }
-    
-    if (status) queryParams.append('status', status);
-    if (_sort) queryParams.append('_sort', _sort);
-    if (_order) queryParams.append('_order', _order);
-    
-    Object.entries(rest).forEach(([key, value]) => {
-      if (value !== undefined && value !== '') {
-        queryParams.append(key, value);
-      }
-    });
+    const { _page = 1, _limit = 10, q, status, _sort = 'id', _order = 'asc', ...rest } = params;
+    // Remove pagination params from the all-fetch request
+    const { _page: _omitPage, _start: _omitStart, _limit: _omitLimit, ...restNoPag } = rest;
 
-    let url = `${API_BASE}/trackings`;
-    
-    if (q) {
-
-      url = `${url}?name_like=${encodeURIComponent(q)}&id_like=${encodeURIComponent(q)}`;
-      queryParams.delete('name_like');
-      queryParams.delete('id_like');
-      const otherParams = queryParams.toString();
-      if (otherParams) {
-        url += `&${otherParams}`;
-      }
-    } else {
-      const paramsString = queryParams.toString();
-      if (paramsString) {
-        url += `?${paramsString}`;
-      }
+    // Always fetch all for consistent client-side filtering/slicing
+    const allParams = {
+      _sort,
+      _order,
+      ...(status && { status }),
+      ...restNoPag
+    };
+    const allUrl = `${API_BASE}/trackings?${new URLSearchParams(allParams).toString()}`;
+    console.log('[trackingApi] GET (all)', allUrl);
+    const allRes = await axios.get(allUrl);
+    let data = Array.isArray(allRes.data) ? allRes.data : [];
+    // Apply search filter client-side if q is provided
+    if (q && String(q).trim() !== '') {
+      const term = String(q).toLowerCase();
+      data = data.filter(item => {
+        const name = String(item.name || '').toLowerCase();
+        const idStr = String(item.id || '').toLowerCase();
+        return name.includes(term) || idStr.includes(term);
+      });
     }
-
-    const response = await axios.get(url);
-    if (q) {
-      const searchTerm = q.toLowerCase();
-      response.data = response.data.filter(item => 
-        item.name.toLowerCase().includes(searchTerm) || 
-        item.id.toLowerCase().includes(searchTerm)
-      );
+    const total = data.length;
+    const start = Object.prototype.hasOwnProperty.call(params, '_start')
+      ? Number(params._start) || 0
+      : (_page - 1) * _limit;
+    const sliced = data.slice(start, start + _limit);
+    // Artificial delay so UI can render skeletons during loading
+    await delay(DELAY_MS);
+    return { data: sliced, total };
+  },
+  
+  // Returns total number of items matching the filters in params
+  count: async (params = {}) => {
+    const { q, status, _sort = 'id', _order = 'asc', ...rest } = params;
+    // Remove pagination params from the all-fetch request
+    const { _page: _omitPage, _start: _omitStart, _limit: _omitLimit, ...restNoPag } = rest;
+    const allParams = {
+      _sort,
+      _order,
+      ...(status && { status }),
+      ...restNoPag
+    };
+    const allUrl = `${API_BASE}/trackings?${new URLSearchParams(allParams).toString()}`;
+    const allRes = await axios.get(allUrl);
+    let data = Array.isArray(allRes.data) ? allRes.data : [];
+    if (q && String(q).trim() !== '') {
+      const term = String(q).toLowerCase();
+      data = data.filter(item => {
+        const name = String(item.name || '').toLowerCase();
+        const idStr = String(item.id || '').toLowerCase();
+        return name.includes(term) || idStr.includes(term);
+      });
     }
-    return response;
+    return data.length;
   },
   
   getById: async (id) => {
@@ -59,15 +71,25 @@ const trackingApi = {
     return response;
   },
   
-  vote: async (trackingId, userId, score = 1) => {
-    const response = await axios.post(`${API_BASE}/votes`, { 
-      trackingId, 
-      userId, 
-      score,
-      timestamp: new Date().toISOString()
-    });
+  // Patch a tracking with partial fields (e.g., increment votes)
+  patchTracking: async (id, data) => {
+    const response = await axios.patch(`${API_BASE}/trackings/${id}`, data);
     return response;
-  }
+  },
+
+  vote: async (trackingId, userId, score = 1) => {
+    await delay(DELAY_MS);
+    const response = await axios.patch(`${API_BASE}/trackings/${trackingId}`, {
+      votes: { [userId]: score }
+    });
+    return response.data;
+  },
+
+  getChartSummary: async () => {
+    await delay(DELAY_MS);
+    const response = await axios.get(`${API_BASE}/chart/summary`);
+    return response.data;
+  },
 };
 
 export default trackingApi;

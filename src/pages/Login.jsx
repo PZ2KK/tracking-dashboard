@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { BsFillBoxFill } from "react-icons/bs";
 
 export default function Login() {
   const { login } = useAuth();
@@ -23,7 +24,7 @@ export default function Login() {
       setError("Invalid username or password.");
       return;
     }
-    
+
     setIsLoading(true);
     try {
       const success = await login(form.username, form.password);
@@ -41,7 +42,13 @@ export default function Login() {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-100">
+    <div className="flex flex-col h-screen items-center justify-center bg-gray-100">
+      <div className="flex items-center gap-2 p-12 text-3xl">
+        <span>
+          <BsFillBoxFill />
+        </span>
+        <h2 className="font-semibold">Tracking Dashboard</h2>
+      </div>
       <div className="w-full max-w-sm bg-white shadow-md rounded-xl p-6">
         <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -73,11 +80,18 @@ export default function Login() {
             type="submit"
             className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md cursor-pointer"
           >
-            {isLoading ? 'Logging in...' : 'Login'}
+            {isLoading ? "Logging in..." : "Login"}
           </button>
           {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
         </form>
       </div>
+      <p className="text-sm text-gray-600 mt-4">
+        (use 
+        <span className="text-blue-600 font-bold"> admin </span> 
+        as username and
+        <span className="text-blue-600 font-bold"> 1234 </span> 
+        as password)
+      </p>
     </div>
   );
 }

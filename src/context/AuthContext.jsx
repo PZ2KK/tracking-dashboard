@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { loginApi } from "../api/authApi";
 
 const AuthContext = createContext();
@@ -31,8 +31,25 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Hydrate from localStorage on mount to ensure user is available after refresh
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken && !token) {
+      setToken(storedToken);
+    }
+    if (!user) {
+      try {
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) setUser(JSON.parse(storedUser));
+      } catch {
+        // ignore
+      }
+    }
+  }, []);
+
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     setToken(null);
     setUser(null);
   };

@@ -1,148 +1,462 @@
 {
-    "users": [
-      {
-        "id": 1,
-        "username": "admin",
-        "password": "1234",
-        "token": "fake-jwt-token"
-      }
-    ],
-    "trackings": [
-      {
-        "id": "TRK001",
-        "name": "Package A",
-        "status": "InTransit",
-        "startDate": "2025-08-01",
-        "endDate": null,
-        "cost": 100,
-        "votes": 0
-      },
-      {
-        "id": "TRK002",
-        "name": "Project B",
-        "status": "Delivered",
-        "startDate": "2025-07-20",
-        "endDate": "2025-07-25",
-        "cost": 250,
-        "votes": 3
-      },
-      {
-        "id": "TRK003",
-        "name": "Parcel C",
-        "status": "Delayed",
-        "startDate": "2025-07-28",
-        "endDate": null,
-        "cost": 180,
-        "votes": 1
-      },
-      {
-        "id": "TRK004",
-        "name": "Project D",
-        "status": "Canceled",
-        "startDate": "2025-07-15",
-        "endDate": null,
-        "cost": 0,
-        "votes": 0
-      },
-      {
-        "id": "TRK005",
-        "name": "Shipment E",
-        "status": "InTransit",
-        "startDate": "2025-08-05",
-        "endDate": null,
-        "cost": 150,
-        "votes": 2
-      },
-      {
-        "id": "TRK006",
-        "name": "Express Delivery F",
-        "status": "InTransit",
-        "startDate": "2025-08-10",
-        "endDate": null,
-        "cost": 220,
-        "votes": 1
-      },
-      {
-        "id": "TRK007",
-        "name": "Freight G",
-        "status": "Processing",
-        "startDate": "2025-08-12",
-        "endDate": null,
-        "cost": 175,
-        "votes": 0
-      },
-      {
-        "id": "TRK008",
-        "name": "Cargo H",
-        "status": "Delivered",
-        "startDate": "2025-07-30",
-        "endDate": "2025-08-05",
-        "cost": 300,
-        "votes": 5
-      },
-      {
-        "id": "TRK009",
-        "name": "Logistics I",
-        "status": "InTransit",
-        "startDate": "2025-08-08",
-        "endDate": null,
-        "cost": 190,
-        "votes": 2
-      },
-      {
-        "id": "TRK010",
-        "name": "Shipment J",
-        "status": "Delayed",
-        "startDate": "2025-08-02",
-        "endDate": null,
-        "cost": 210,
-        "votes": 1
-      },
-      {
-        "id": "TRK011",
-        "name": "Package K",
-        "status": "InTransit",
-        "startDate": "2025-08-15",
-        "endDate": null,
-        "cost": 140,
-        "votes": 0
-      },
-      {
-        "id": "TRK012",
-        "name": "Delivery L",
-        "status": "Processing",
-        "startDate": "2025-08-14",
-        "endDate": null,
-        "cost": 160,
-        "votes": 0
-      },
-      {
-        "id": "TRK013",
-        "name": "Freight M",
-        "status": "Delivered",
-        "startDate": "2025-07-25",
-        "endDate": "2025-08-01",
-        "cost": 275,
-        "votes": 4
-      },
-      {
-        "id": "TRK014",
-        "name": "Cargo N",
-        "status": "InTransit",
-        "startDate": "2025-08-11",
-        "endDate": null,
-        "cost": 195,
-        "votes": 1
-      },
-      {
-        "id": "TRK015",
-        "name": "Express O",
-        "status": "Processing",
-        "startDate": "2025-08-13",
-        "endDate": null,
-        "cost": 225,
-        "votes": 0
-      }
-    ],
-    "votes": []
-  }
+  "users": [
+    {
+      "id": 1,
+      "username": "admin",
+      "password": "1234",
+      "token": "fake-jwt-token"
+    }
+  ],
+  "trackings": [
+    {
+      "id": "TRK001",
+      "name": "Package A",
+      "status": "InTransit",
+      "startDate": "2025-08-01",
+      "endDate": null,
+      "cost": 100,
+      "votes": 0
+    },
+    {
+      "id": "TRK002",
+      "name": "Project B",
+      "status": "Delivered",
+      "startDate": "2025-07-20",
+      "endDate": "2025-07-25",
+      "cost": 250,
+      "votes": 3
+    },
+    {
+      "id": "TRK003",
+      "name": "Parcel C",
+      "status": "Delayed",
+      "startDate": "2025-07-28",
+      "endDate": null,
+      "cost": 180,
+      "votes": 1
+    },
+    {
+      "id": "TRK004",
+      "name": "Project D",
+      "status": "Canceled",
+      "startDate": "2025-07-15",
+      "endDate": null,
+      "cost": 0,
+      "votes": 0
+    },
+    {
+      "id": "TRK005",
+      "name": "Shipment E",
+      "status": "InTransit",
+      "startDate": "2025-08-05",
+      "endDate": null,
+      "cost": 150,
+      "votes": 2
+    },
+    {
+      "id": "TRK006",
+      "name": "Express Delivery F",
+      "status": "InTransit",
+      "startDate": "2025-08-10",
+      "endDate": null,
+      "cost": 220,
+      "votes": 1
+    },
+    {
+      "id": "TRK007",
+      "name": "Freight G",
+      "status": "Pending",
+      "startDate": "2025-08-12",
+      "endDate": null,
+      "cost": 175,
+      "votes": 0
+    },
+    {
+      "id": "TRK008",
+      "name": "Cargo H",
+      "status": "Delivered",
+      "startDate": "2025-07-30",
+      "endDate": "2025-08-05",
+      "cost": 300,
+      "votes": 5
+    },
+    {
+      "id": "TRK009",
+      "name": "Logistics I",
+      "status": "InTransit",
+      "startDate": "2025-08-08",
+      "endDate": null,
+      "cost": 190,
+      "votes": 2
+    },
+    {
+      "id": "TRK010",
+      "name": "Shipment J",
+      "status": "Delayed",
+      "startDate": "2025-08-02",
+      "endDate": null,
+      "cost": 210,
+      "votes": 1
+    },
+    {
+      "id": "TRK011",
+      "name": "Package K",
+      "status": "InTransit",
+      "startDate": "2025-08-15",
+      "endDate": null,
+      "cost": 140,
+      "votes": 0
+    },
+    {
+      "id": "TRK012",
+      "name": "Delivery L",
+      "status": "Pending",
+      "startDate": "2025-08-14",
+      "endDate": null,
+      "cost": 160,
+      "votes": 0
+    },
+    {
+      "id": "TRK013",
+      "name": "Freight M",
+      "status": "Delivered",
+      "startDate": "2025-07-25",
+      "endDate": "2025-08-01",
+      "cost": 275,
+      "votes": 4
+    },
+    {
+      "id": "TRK014",
+      "name": "Cargo N",
+      "status": "InTransit",
+      "startDate": "2025-08-11",
+      "endDate": null,
+      "cost": 195,
+      "votes": 1
+    },
+    {
+      "id": "TRK015",
+      "name": "Express O",
+      "status": "Pending",
+      "startDate": "2025-08-13",
+      "endDate": null,
+      "cost": 225,
+      "votes": 0
+    },
+    {
+      "id": "TRK016",
+      "name": "Parcel P",
+      "status": "InTransit",
+      "startDate": "2025-08-16",
+      "endDate": null,
+      "cost": 130,
+      "votes": 0
+    },
+    {
+      "id": "TRK017",
+      "name": "Cargo Q",
+      "status": "Delivered",
+      "startDate": "2025-07-18",
+      "endDate": "2025-07-22",
+      "cost": 260,
+      "votes": 1
+    },
+    {
+      "id": "TRK018",
+      "name": "Shipment R",
+      "status": "Delayed",
+      "startDate": "2025-08-06",
+      "endDate": null,
+      "cost": 185,
+      "votes": 0
+    },
+    {
+      "id": "TRK019",
+      "name": "Project S",
+      "status": "Canceled",
+      "startDate": "2025-07-10",
+      "endDate": null,
+      "cost": 0,
+      "votes": 0
+    },
+    {
+      "id": "TRK020",
+      "name": "Logistics T",
+      "status": "Pending",
+      "startDate": "2025-08-17",
+      "endDate": null,
+      "cost": 170,
+      "votes": 0
+    },
+    {
+      "id": "TRK021",
+      "name": "Package U",
+      "status": "InTransit",
+      "startDate": "2025-08-09",
+      "endDate": null,
+      "cost": 155,
+      "votes": 0
+    },
+    {
+      "id": "TRK022",
+      "name": "Freight V",
+      "status": "Delivered",
+      "startDate": "2025-07-26",
+      "endDate": "2025-07-31",
+      "cost": 290,
+      "votes": 2
+    },
+    {
+      "id": "TRK023",
+      "name": "Express W",
+      "status": "Delayed",
+      "startDate": "2025-08-03",
+      "endDate": null,
+      "cost": 205,
+      "votes": 1
+    },
+    {
+      "id": "TRK024",
+      "name": "Cargo X",
+      "status": "Canceled",
+      "startDate": "2025-07-12",
+      "endDate": null,
+      "cost": 0,
+      "votes": 0
+    },
+    {
+      "id": "TRK025",
+      "name": "Shipment Y",
+      "status": "Pending",
+      "startDate": "2025-08-18",
+      "endDate": null,
+      "cost": 165,
+      "votes": 0
+    },
+    {
+      "id": "TRK026",
+      "name": "Delivery Z",
+      "status": "InTransit",
+      "startDate": "2025-08-07",
+      "endDate": null,
+      "cost": 200,
+      "votes": 0
+    },
+    {
+      "id": "TRK027",
+      "name": "Package AA",
+      "status": "Delivered",
+      "startDate": "2025-07-27",
+      "endDate": "2025-08-02",
+      "cost": 240,
+      "votes": 3
+    },
+    {
+      "id": "TRK028",
+      "name": "Freight AB",
+      "status": "Delayed",
+      "startDate": "2025-08-04",
+      "endDate": null,
+      "cost": 190,
+      "votes": 0
+    },
+    {
+      "id": "TRK029",
+      "name": "Project AC",
+      "status": "Canceled",
+      "startDate": "2025-07-14",
+      "endDate": null,
+      "cost": 0,
+      "votes": 0
+    },
+    {
+      "id": "TRK030",
+      "name": "Logistics AD",
+      "status": "Pending",
+      "startDate": "2025-08-19",
+      "endDate": null,
+      "cost": 175,
+      "votes": 0
+    },
+    {
+      "id": "TRK031",
+      "name": "Shipment AE",
+      "status": "Delivered",
+      "startDate": "2024-08-20",
+      "endDate": "2024-08-25",
+      "cost": 185,
+      "votes": 2
+    },
+    {
+      "id": "TRK032",
+      "name": "Package AF",
+      "status": "Delivered",
+      "startDate": "2024-09-05",
+      "endDate": "2024-09-12",
+      "cost": 220,
+      "votes": 3
+    },
+    {
+      "id": "TRK033",
+      "name": "Cargo AG",
+      "status": "Delivered",
+      "startDate": "2024-09-18",
+      "endDate": "2024-09-25",
+      "cost": 195,
+      "votes": 1
+    },
+    {
+      "id": "TRK034",
+      "name": "Delivery AH",
+      "status": "Delivered",
+      "startDate": "2024-10-02",
+      "endDate": "2024-10-09",
+      "cost": 210,
+      "votes": 2
+    },
+    {
+      "id": "TRK035",
+      "name": "Freight AI",
+      "status": "Delivered",
+      "startDate": "2024-10-15",
+      "endDate": "2024-10-22",
+      "cost": 175,
+      "votes": 1
+    },
+    {
+      "id": "TRK036",
+      "name": "Consignment AJ",
+      "status": "Delivered",
+      "startDate": "2024-11-01",
+      "endDate": "2024-11-08",
+      "cost": 230,
+      "votes": 3
+    },
+    {
+      "id": "TRK037",
+      "name": "Shipment AK",
+      "status": "Delivered",
+      "startDate": "2024-11-12",
+      "endDate": "2024-11-19",
+      "cost": 195,
+      "votes": 2
+    },
+    {
+      "id": "TRK038",
+      "name": "Package AL",
+      "status": "Delivered",
+      "startDate": "2024-11-25",
+      "endDate": "2024-12-02",
+      "cost": 205,
+      "votes": 1
+    },
+    {
+      "id": "TRK039",
+      "name": "Cargo AM",
+      "status": "Delivered",
+      "startDate": "2024-12-05",
+      "endDate": "2024-12-12",
+      "cost": 185,
+      "votes": 2
+    },
+    {
+      "id": "TRK040",
+      "name": "Delivery AN",
+      "status": "Delivered",
+      "startDate": "2024-12-15",
+      "endDate": "2024-12-22",
+      "cost": 215,
+      "votes": 1
+    },
+    {
+      "id": "TRK041",
+      "name": "Freight AO",
+      "status": "Delivered",
+      "startDate": "2025-01-05",
+      "endDate": "2025-01-12",
+      "cost": 195,
+      "votes": 3
+    },
+    {
+      "id": "TRK042",
+      "name": "Consignment AP",
+      "status": "Delivered",
+      "startDate": "2025-01-15",
+      "endDate": "2025-01-22",
+      "cost": 225,
+      "votes": 2
+    },
+    {
+      "id": "TRK043",
+      "name": "Shipment AQ",
+      "status": "Delivered",
+      "startDate": "2025-01-25",
+      "endDate": "2025-02-01",
+      "cost": 195,
+      "votes": 1
+    },
+    {
+      "id": "TRK044",
+      "name": "Package AR",
+      "status": "Delivered",
+      "startDate": "2025-02-05",
+      "endDate": "2025-02-12",
+      "cost": 205,
+      "votes": 2
+    },
+    {
+      "id": "TRK045",
+      "name": "Cargo AS",
+      "status": "Delivered",
+      "startDate": "2025-02-15",
+      "endDate": "2025-02-22",
+      "cost": 185,
+      "votes": 1
+    },
+    {
+      "id": "TRK046",
+      "name": "Delivery AT",
+      "status": "Delivered",
+      "startDate": "2025-03-01",
+      "endDate": "2025-03-08",
+      "cost": 215,
+      "votes": 3
+    },
+    {
+      "id": "TRK047",
+      "name": "Freight AU",
+      "status": "Delivered",
+      "startDate": "2025-03-10",
+      "endDate": "2025-03-17",
+      "cost": 195,
+      "votes": 2
+    },
+    {
+      "id": "TRK048",
+      "name": "Consignment AV",
+      "status": "Delivered",
+      "startDate": "2025-03-20",
+      "endDate": "2025-03-27",
+      "cost": 225,
+      "votes": 1
+    },
+    {
+      "id": "TRK049",
+      "name": "Shipment AW",
+      "status": "Delivered",
+      "startDate": "2025-04-05",
+      "endDate": "2025-04-12",
+      "cost": 195,
+      "votes": 2
+    },
+    {
+      "id": "TRK050",
+      "name": "Package AX",
+      "status": "Delivered",
+      "startDate": "2025-04-15",
+      "endDate": "2025-04-22",
+      "cost": 215,
+      "votes": 1
+    }
+  ]
+}
