@@ -57,7 +57,7 @@ export default function Dropdown({
                 key={opt.value}
                 role="option"
                 aria-selected={active}
-                className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${
+                className={`px-3 py-1.5 cursor-pointer hover:bg-gray-100 ${
                   active ? "bg-gray-100 font-medium" : ""
                 }`}
                 onClick={() => handleSelect(opt.value)}

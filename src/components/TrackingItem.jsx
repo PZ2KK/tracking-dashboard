@@ -23,7 +23,7 @@ export default function TrackingItem({ item }) {
       {/* Left Box */}
       <div className="flex-1">
         <p className="font-semibold">ID: {item.id}</p>
-        <p className="text-lg font-medium">Item: {item.name}</p>
+        <p className="text-lg font-medium">Name: {item.name}</p>
         <div className="mt-2 space-y-1">
           <p className="text-sm text-gray-600">
             <span className="font-medium">Start:</span> {item.startDate || "-"}

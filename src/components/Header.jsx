@@ -10,6 +10,7 @@ export default function Header({ onSearch, onFilter, onSort }) {
   const [showFilters, setShowFilters] = useState(false);
   const containerRef = useRef(null);
   const [query, setQuery] = useState("");
+  const firstRunRef = useRef(true);
 
   const handleLogout = () => {
     logout();
@@ -42,9 +43,17 @@ export default function Header({ onSearch, onFilter, onSort }) {
     return () => document.removeEventListener('mousedown', onDocClick);
   }, []);
 
-  const triggerSearch = () => {
-    onSearch?.(query || "");
-  };
+  // Debounce search on query change
+  useEffect(() => {
+    if (firstRunRef.current) {
+      firstRunRef.current = false;
+      return;
+    }
+    const id = setTimeout(() => {
+      onSearch?.(query || "");
+    }, 400);
+    return () => clearTimeout(id);
+  }, [query]);
 
   return (
     <header ref={containerRef} className="bg-white shadow px-4 py-3 mb-4">
@@ -64,10 +73,8 @@ export default function Header({ onSearch, onFilter, onSort }) {
             onChange={(e) => setQuery(e.target.value)}
             onFocus={() => setShowFilters(true)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                triggerSearch();
-              }
+              // Enter is not required since we debounce on change; prevent form submissions
+              if (e.key === 'Enter') e.preventDefault();
             }}
             onBlur={() => {
               // Delay to allow clicks inside dropdown
@@ -79,12 +86,6 @@ export default function Header({ onSearch, onFilter, onSort }) {
               }, 0);
             }}
           />
-          <button
-            onClick={triggerSearch}
-            className="absolute right-1 top-1/2 -translate-y-1/2 bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1.5 rounded-md cursor-pointer"
-          >
-            Search
-          </button>
 
           {showFilters && (
             <div className="absolute z-20 mt-2 w-full bg-white rounded-md shadow-lg p-3 border  border-gray-300">
@@ -94,7 +95,7 @@ export default function Header({ onSearch, onFilter, onSort }) {
         </div>
 
         <div className="flex items-center gap-4">
-          <span className="text-sm text-gray-700">Signed in as <span className="font-medium">{username}</span></span>
+          <span className="text-sm text-gray-700">Signed in as <span className="font-bold text-gray-800">{username}</span></span>
           <button
             onClick={handleLogout}
             className="bg-red-600 hover:bg-red-700 text-white text-sm px-3 py-1.5 rounded-md cursor-pointer"

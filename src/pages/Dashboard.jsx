@@ -17,17 +17,25 @@ export default function Dashboard() {
   const [hasMore, setHasMore] = useState(true);
   const pageRef = useRef(1); // kept in case it's used elsewhere, but offset-based loading will be primary
   const [totalCount, setTotalCount] = useState(0);
+  const reqIdRef = useRef(0);
 
   const fetchTrackings = useCallback(async (params, isReset) => {
+    const currentReqId = ++reqIdRef.current;
     setLoading(true);
     try {
       const res = await trackingApi.getAll(params);
       const incoming = Array.isArray(res.data) ? res.data : [];
+      if (currentReqId !== reqIdRef.current) return; // stale
 
       setTrackings(prev => {
         if (isReset) {
           // when resetting, replace entirely
-          setHasMore(incoming.length === params._limit);
+          // prefer API-provided total when available
+          if (typeof res.total === 'number') setTotalCount(res.total);
+          setHasMore((typeof res.total === 'number')
+            ? (incoming.length + 0) < res.total
+            : (incoming.length === params._limit)
+          );
           return incoming;
         }
         // build a set of existing ids to avoid duplicates
@@ -48,12 +56,14 @@ export default function Dashboard() {
 
   useEffect(() => {
     pageRef.current = 1;
-    fetchTrackings({ ...searchParams, _page: 1, _start: 0 }, true);
+    const params = { ...searchParams, _page: 1, _start: 0 };
+    const myReqId = ++reqIdRef.current;
+    fetchTrackings(params, true);
     // Fetch total count for current filters
     (async () => {
       try {
-        const total = await trackingApi.count({ q: searchParams.q, status: searchParams.status, _sort: searchParams._sort, _order: searchParams._order });
-        setTotalCount(total);
+        const total = await trackingApi.count({ q: params.q, status: params.status, _sort: params._sort, _order: params._order });
+        if (myReqId === reqIdRef.current) setTotalCount(total);
       } catch (e) {
         // ignore count errors for now
       }

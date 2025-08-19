@@ -65,7 +65,7 @@
       {
         "id": "TRK007",
         "name": "Freight G",
-        "status": "Processing",
+        "status": "Pending",
         "startDate": "2025-08-12",
         "endDate": null,
         "cost": 175,
@@ -110,7 +110,7 @@
       {
         "id": "TRK012",
         "name": "Delivery L",
-        "status": "Processing",
+        "status": "Pending",
         "startDate": "2025-08-14",
         "endDate": null,
         "cost": 160,
@@ -137,7 +137,7 @@
       {
         "id": "TRK015",
         "name": "Express O",
-        "status": "Processing",
+        "status": "Pending",
         "startDate": "2025-08-13",
         "endDate": null,
         "cost": 225,

@@ -5,75 +5,57 @@ const API_BASE = "http://localhost:4000";
 const trackingApi = {
   getAll: async (params = {}) => {
     const { _page = 1, _limit = 10, q, status, _sort = 'id', _order = 'asc', ...rest } = params;
-    
-    // Prefer offset-based pagination if _start is provided; else use _page
-    const usingOffset = Object.prototype.hasOwnProperty.call(params, '_start');
-    const queryParams = {
-      ...(usingOffset ? {} : { _page }),
-      ...(usingOffset ? { _start: params._start } : {}),
-      _limit,
+    // Remove pagination params from the all-fetch request
+    const { _page: _omitPage, _start: _omitStart, _limit: _omitLimit, ...restNoPag } = rest;
+
+    // Always fetch all for consistent client-side filtering/slicing
+    const allParams = {
       _sort,
       _order,
-      ...(q && { q }),
       ...(status && { status }),
-      ...rest
+      ...restNoPag
     };
-    
-    // Remove undefined or empty values
-    Object.keys(queryParams).forEach(key => 
-      (queryParams[key] === undefined || queryParams[key] === '') && delete queryParams[key]
-    );
-    
-    const url = `${API_BASE}/trackings?${new URLSearchParams(queryParams).toString()}`;
-    console.log('[trackingApi] GET', url);
-
-    const response = await axios.get(url);
-    if (q) {
-      const searchTerm = String(q).toLowerCase();
-      response.data = response.data.filter(item => {
+    const allUrl = `${API_BASE}/trackings?${new URLSearchParams(allParams).toString()}`;
+    console.log('[trackingApi] GET (all)', allUrl);
+    const allRes = await axios.get(allUrl);
+    let data = Array.isArray(allRes.data) ? allRes.data : [];
+    // Apply search filter client-side if q is provided
+    if (q && String(q).trim() !== '') {
+      const term = String(q).toLowerCase();
+      data = data.filter(item => {
         const name = String(item.name || '').toLowerCase();
         const idStr = String(item.id || '').toLowerCase();
-        return name.includes(searchTerm) || idStr.includes(searchTerm);
+        return name.includes(term) || idStr.includes(term);
       });
     }
-    return response;
+    const total = data.length;
+    const start = Object.prototype.hasOwnProperty.call(params, '_start')
+      ? Number(params._start) || 0
+      : (_page - 1) * _limit;
+    const sliced = data.slice(start, start + _limit);
+    return { data: sliced, total };
   },
   
   // Returns total number of items matching the filters in params
   count: async (params = {}) => {
     const { q, status, _sort = 'id', _order = 'asc', ...rest } = params;
-    const queryParams = {
-      _page: 1,
-      _limit: 1,
-      _sort,
-      _order,
-      ...(q && { q }),
-      ...(status && { status }),
-      ...rest
-    };
-    Object.keys(queryParams).forEach(key => 
-      (queryParams[key] === undefined || queryParams[key] === '') && delete queryParams[key]
-    );
-    const url = `${API_BASE}/trackings?${new URLSearchParams(queryParams).toString()}`;
-    const response = await axios.get(url);
-    const headerCount = response.headers?.['x-total-count'] || response.headers?.['X-Total-Count'];
-    if (headerCount) return Number(headerCount);
-    // Fallback: fetch all without pagination and apply same client-side search filter
+    // Remove pagination params from the all-fetch request
+    const { _page: _omitPage, _start: _omitStart, _limit: _omitLimit, ...restNoPag } = rest;
     const allParams = {
       _sort,
       _order,
       ...(status && { status }),
-      ...rest
+      ...restNoPag
     };
     const allUrl = `${API_BASE}/trackings?${new URLSearchParams(allParams).toString()}`;
     const allRes = await axios.get(allUrl);
     let data = Array.isArray(allRes.data) ? allRes.data : [];
-    if (q) {
-      const searchTerm = String(q).toLowerCase();
+    if (q && String(q).trim() !== '') {
+      const term = String(q).toLowerCase();
       data = data.filter(item => {
         const name = String(item.name || '').toLowerCase();
         const idStr = String(item.id || '').toLowerCase();
-        return name.includes(searchTerm) || idStr.includes(searchTerm);
+        return name.includes(term) || idStr.includes(term);
       });
     }
     return data.length;
