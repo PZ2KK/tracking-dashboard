@@ -4,7 +4,11 @@ import InfiniteLoader from "react-window-infinite-loader";
 import TrackingItem from "./TrackingItem";
 
 export default function TrackingList({ items, hasMore, loadMoreItems, isLoading }) {
-  const itemCount = hasMore ? items.length + 1 : items.length;
+  const PLACEHOLDER_COUNT = 3;
+  const showEndRow = !hasMore && items.length > 0;
+  const itemCount = hasMore
+    ? items.length + PLACEHOLDER_COUNT
+    : (showEndRow ? items.length + 1 : items.length);
 
   const isItemLoaded = index => !hasMore || index < items.length;
 
@@ -27,8 +31,23 @@ export default function TrackingList({ items, hasMore, loadMoreItems, isLoading 
   const Row = ({ index, style }) => {
     if (!isItemLoaded(index)) {
       return (
+        <div style={style} className="pr-6">
+          <div className="animate-pulse bg-white shadow rounded-lg p-4">
+            <div className="h-4 bg-gray-200 rounded w-24 mb-3" />
+            <div className="h-5 bg-gray-200 rounded w-48 mb-4" />
+            <div className="space-y-2">
+              <div className="h-3 bg-gray-200 rounded w-40" />
+              <div className="h-3 bg-gray-200 rounded w-36" />
+              <div className="h-4 bg-gray-200 rounded w-28" />
+            </div>
+          </div>
+        </div>
+      );
+    }
+    if (!hasMore && showEndRow && index === items.length) {
+      return (
         <div style={style} className="flex items-center justify-center text-gray-500">
-          Loading...
+          no more items
         </div>
       );
     }
@@ -68,7 +87,7 @@ export default function TrackingList({ items, hasMore, loadMoreItems, isLoading 
       minimumBatchSize={1}
     >
       {({ onItemsRendered, ref }) => (
-        <div ref={containerRef}>
+        <div ref={containerRef} style={{ overflowAnchor: 'none' }}>
           <List
             height={listHeight} 
             itemCount={itemCount}

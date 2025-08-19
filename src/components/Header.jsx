@@ -95,10 +95,10 @@ export default function Header({ onSearch, onFilter, onSort }) {
         </div>
 
         <div className="flex items-center gap-4">
-          <span className="text-sm text-gray-700">Signed in as <span className="font-bold text-gray-800">{username}</span></span>
+          <span className="text-sm text-gray-700 hidden md:block">Signed in as <span className="font-bold text-gray-800">{username}</span></span>
           <button
             onClick={handleLogout}
-            className="bg-red-600 hover:bg-red-700 text-white text-sm px-3 py-1.5 rounded-md cursor-pointer"
+            className="bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-3 py-1.5 rounded-md cursor-pointer"
           >
             Logout
           </button>

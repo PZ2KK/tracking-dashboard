@@ -1,6 +1,9 @@
 import axios from "axios";
 
 const API_BASE = "http://localhost:4000";
+const DELAY_MS = 600; // artificial delay to allow skeletons to be visible
+
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 const trackingApi = {
   getAll: async (params = {}) => {
@@ -33,6 +36,8 @@ const trackingApi = {
       ? Number(params._start) || 0
       : (_page - 1) * _limit;
     const sliced = data.slice(start, start + _limit);
+    // Artificial delay so UI can render skeletons during loading
+    await delay(DELAY_MS);
     return { data: sliced, total };
   },
   
@@ -66,6 +71,12 @@ const trackingApi = {
     return response;
   },
   
+  // Patch a tracking with partial fields (e.g., increment votes)
+  patchTracking: async (id, data) => {
+    const response = await axios.patch(`${API_BASE}/trackings/${id}`, data);
+    return response;
+  },
+
   vote: async (trackingId, userId, score = 1) => {
     const response = await axios.post(`${API_BASE}/votes`, { 
       trackingId, 

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import Dropdown from './Dropdown';
 
 export default function SearchAndFilter({ onSearch, onFilter, onSort, embedded = false }) {
-  const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [sortBy, setSortBy] = useState('id');
   const [sortOrder, setSortOrder] = useState('asc');
@@ -50,26 +49,6 @@ export default function SearchAndFilter({ onSearch, onFilter, onSort, embedded =
 
   return (
     <div className={`bg-white ${embedded ? '' : 'p-4 rounded-lg shadow mb-6'}`}>
-      {!embedded && (
-        <form onSubmit={handleSearch} className="mb-4">
-          <div className="flex gap-2">
-            <input
-              type="text"
-              placeholder="Search by name or ID..."
-              className="flex-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <button
-              type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors cursor-pointer"
-            >
-              Search
-            </button>
-          </div>
-        </form>
-      )}
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Dropdown
           label="Status"
