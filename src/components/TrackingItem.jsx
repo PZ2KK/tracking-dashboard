@@ -39,8 +39,9 @@ export default function TrackingItem({ item }) {
 
       {/* Right Box */}
       <div className="flex flex-col items-end justify-between pl-4 ">
+        
         <span className={`${statusColor} text-xs font-medium px-2.5 py-0.5 rounded-full mb-2`}>
-          {item.status}
+         {item.status}
         </span>
         <div className="flex flex-col items-end space-y-2">
           <div className="flex items-center space-x-2">

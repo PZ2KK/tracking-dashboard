@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FixedSizeList as List } from "react-window";
 import InfiniteLoader from "react-window-infinite-loader";
 import TrackingItem from "./TrackingItem";
@@ -39,6 +39,26 @@ export default function TrackingList({ items, hasMore, loadMoreItems, isLoading 
     );
   };
 
+  // Make the list fill available viewport height
+  const containerRef = useRef(null);
+  const [listHeight, setListHeight] = useState(540);
+
+  useEffect(() => {
+    const recompute = () => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const available = window.innerHeight - rect.top - 16; // 16px bottom padding margin
+      setListHeight(Math.max(200, Math.floor(available)));
+    };
+    recompute();
+    window.addEventListener('resize', recompute);
+    window.addEventListener('scroll', recompute, { passive: true });
+    return () => {
+      window.removeEventListener('resize', recompute);
+      window.removeEventListener('scroll', recompute);
+    };
+  }, []);
+
   return (
     <InfiniteLoader
       isItemLoaded={isItemLoaded}
@@ -48,18 +68,20 @@ export default function TrackingList({ items, hasMore, loadMoreItems, isLoading 
       minimumBatchSize={1}
     >
       {({ onItemsRendered, ref }) => (
-        <List
-          height={540} 
-          itemCount={itemCount}
-          itemSize={180}
-          width="100%"
-          overscanCount={1}
-          onScroll={handleScroll}
-          onItemsRendered={onItemsRendered}
-          ref={ref}
-        >
-          {Row}
-        </List>
+        <div ref={containerRef}>
+          <List
+            height={listHeight} 
+            itemCount={itemCount}
+            itemSize={180}
+            width="100%"
+            overscanCount={1}
+            onScroll={handleScroll}
+            onItemsRendered={onItemsRendered}
+            ref={ref}
+          >
+            {Row}
+          </List>
+        </div>
       )}
     </InfiniteLoader>
   );

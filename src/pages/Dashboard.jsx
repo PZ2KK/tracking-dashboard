@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import trackingApi from "../api/trackingApi";
 import TrackingList from "../components/TrackingList";
-import SearchAndFilter from "../components/SearchAndFilter";
+import Header from "../components/Header";
 
 export default function Dashboard() {
   const [trackings, setTrackings] = useState([]);
@@ -80,15 +80,10 @@ export default function Dashboard() {
   }, [loading, hasMore, fetchTrackings, searchParams, trackings.length]);
 
   return (
-    <div className="min-h-screen p-6 bg-gray-100">
+    <div className="min-h-screen  bg-gray-100">
+      <Header onSearch={handleSearch} onFilter={handleFilter} onSort={handleSort} />
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-2xl font-bold mb-6">📦 Tracking Dashboard</h1>
         
-        <SearchAndFilter 
-          onSearch={handleSearch}
-          onFilter={handleFilter}
-          onSort={handleSort}
-        />
 
         <div className="mb-2 text-sm text-gray-600">Showing {trackings.length} of {totalCount} items</div>
 
