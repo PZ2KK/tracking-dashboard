@@ -1,77 +1,83 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import trackingApi from "../api/trackingApi";
 import TrackingList from "../components/TrackingList";
 import SearchAndFilter from "../components/SearchAndFilter";
 
 export default function Dashboard() {
   const [trackings, setTrackings] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [searchParams, setSearchParams] = useState({
     q: '',
     status: '',
     _sort: 'id',
     _order: 'asc',
-    _page: 1,
-    _limit: 10
+    _limit: 5
   });
+  const [hasMore, setHasMore] = useState(true);
+  const pageRef = useRef(1); // kept in case it's used elsewhere, but offset-based loading will be primary
   const [totalCount, setTotalCount] = useState(0);
 
-  const fetchTrackings = useCallback(async () => {
+  const fetchTrackings = useCallback(async (params, isReset) => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const res = await trackingApi.getAll(searchParams);
-      
-      const total = res.headers['x-total-count'] || res.data.length;
-      setTotalCount(Number(total));
-      
-      setTrackings(Array.isArray(res.data) ? res.data : []);
+      const res = await trackingApi.getAll(params);
+      const incoming = Array.isArray(res.data) ? res.data : [];
+
+      setTrackings(prev => {
+        if (isReset) {
+          // when resetting, replace entirely
+          setHasMore(incoming.length === params._limit);
+          return incoming;
+        }
+        // build a set of existing ids to avoid duplicates
+        const existingIds = new Set(prev.map(it => String(it.id)));
+        const uniqueAdds = incoming.filter(it => !existingIds.has(String(it.id)));
+        // update hasMore: only true if we actually got new unique items and page seems full
+        setHasMore(uniqueAdds.length > 0 && incoming.length === params._limit);
+        return [...prev, ...uniqueAdds];
+      });
       setError(null);
     } catch (err) {
       console.error("Error fetching trackings:", err);
       setError("Failed to load trackings. Please try again later.");
-      setTrackings([]);
     } finally {
       setLoading(false);
     }
-  }, [searchParams]);
+  }, [searchParams._limit]);
 
   useEffect(() => {
-    fetchTrackings();
-  }, [fetchTrackings]);
+    pageRef.current = 1;
+    fetchTrackings({ ...searchParams, _page: 1, _start: 0 }, true);
+    // Fetch total count for current filters
+    (async () => {
+      try {
+        const total = await trackingApi.count({ q: searchParams.q, status: searchParams.status, _sort: searchParams._sort, _order: searchParams._order });
+        setTotalCount(total);
+      } catch (e) {
+        // ignore count errors for now
+      }
+    })();
+  }, [fetchTrackings, searchParams.q, searchParams.status, searchParams._sort, searchParams._order]);
 
   const handleSearch = (searchTerm) => {
-    setSearchParams(prev => ({
-      ...prev,
-      q: searchTerm,
-      _page: 1
-    }));
+    setSearchParams(prev => ({ ...prev, q: searchTerm }));
   };
 
   const handleFilter = (status) => {
-    setSearchParams(prev => ({
-      ...prev,
-      status,
-      _page: 1
-    }));
+    setSearchParams(prev => ({ ...prev, status }));
   };
 
   const handleSort = (sortBy, sortOrder) => {
-    setSearchParams(prev => ({
-      ...prev,
-      _sort: sortBy,
-      _order: sortOrder
-    }));
+    setSearchParams(prev => ({ ...prev, _sort: sortBy, _order: sortOrder }));
   };
 
-  const handlePageChange = (newPage) => {
-    setSearchParams(prev => ({
-      ...prev,
-      _page: newPage
-    }));
-  };
-
-  const totalPages = Math.ceil(totalCount / searchParams._limit);
+  const loadMoreItems = useCallback(async () => {
+    if (loading || !hasMore) return Promise.resolve();
+    const offset = trackings.length; // use current count as _start
+    const newParams = { ...searchParams, _start: offset, _limit: searchParams._limit };
+    return fetchTrackings(newParams, false);
+  }, [loading, hasMore, fetchTrackings, searchParams, trackings.length]);
 
   return (
     <div className="min-h-screen p-6 bg-gray-100">
@@ -84,37 +90,23 @@ export default function Dashboard() {
           onSort={handleSort}
         />
 
-        {loading ? (
-          <div className="p-8 text-center text-gray-500">Loading...</div>
-        ) : error ? (
-          <div className="p-4 text-red-500">{error}</div>
-        ) : trackings.length === 0 ? (
+        <div className="mb-2 text-sm text-gray-600">Showing {trackings.length} of {totalCount} items</div>
+
+        {error && <div className="p-4 text-red-500">{error}</div>}
+
+        <TrackingList 
+          items={trackings}
+          hasMore={hasMore}
+          loadMoreItems={loadMoreItems}
+          isLoading={loading}
+        />
+
+        {loading && trackings.length > 0 && (
+            <div className="p-8 text-center text-gray-500">Loading more...</div>
+        )}
+
+        {!loading && trackings.length === 0 && !error && (
           <div className="p-8 text-center text-gray-500">No tracking items found.</div>
-        ) : (
-          <>
-            <div className="mb-4 text-sm text-gray-600">
-              Showing {trackings.length} of {totalCount} items
-            </div>
-            <TrackingList items={trackings} />
-            
-            {totalPages > 1 && (
-              <div className="mt-6 flex justify-center space-x-2">
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
-                  <button
-                    key={pageNum}
-                    onClick={() => handlePageChange(pageNum)}
-                    className={`px-3 py-1 rounded-md ${
-                      searchParams._page === pageNum
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-white text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    {pageNum}
-                  </button>
-                ))}
-              </div>
-            )}
-          </>
         )}
       </div>
     </div>

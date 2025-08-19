@@ -4,54 +4,79 @@ const API_BASE = "http://localhost:4000";
 
 const trackingApi = {
   getAll: async (params = {}) => {
-    const { _page, _limit, q, status, _sort, _order, ...rest } = params;
-    const queryParams = new URLSearchParams();
+    const { _page = 1, _limit = 10, q, status, _sort = 'id', _order = 'asc', ...rest } = params;
     
-    if (_page) queryParams.append('_page', _page);
-    if (_limit) queryParams.append('_limit', _limit);
+    // Prefer offset-based pagination if _start is provided; else use _page
+    const usingOffset = Object.prototype.hasOwnProperty.call(params, '_start');
+    const queryParams = {
+      ...(usingOffset ? {} : { _page }),
+      ...(usingOffset ? { _start: params._start } : {}),
+      _limit,
+      _sort,
+      _order,
+      ...(q && { q }),
+      ...(status && { status }),
+      ...rest
+    };
     
-    if (q) {
-      queryParams.append('name_like', q);
-      queryParams.append('id_like', q);
-    }
+    // Remove undefined or empty values
+    Object.keys(queryParams).forEach(key => 
+      (queryParams[key] === undefined || queryParams[key] === '') && delete queryParams[key]
+    );
     
-    if (status) queryParams.append('status', status);
-    if (_sort) queryParams.append('_sort', _sort);
-    if (_order) queryParams.append('_order', _order);
-    
-    Object.entries(rest).forEach(([key, value]) => {
-      if (value !== undefined && value !== '') {
-        queryParams.append(key, value);
-      }
-    });
-
-    let url = `${API_BASE}/trackings`;
-    
-    if (q) {
-
-      url = `${url}?name_like=${encodeURIComponent(q)}&id_like=${encodeURIComponent(q)}`;
-      queryParams.delete('name_like');
-      queryParams.delete('id_like');
-      const otherParams = queryParams.toString();
-      if (otherParams) {
-        url += `&${otherParams}`;
-      }
-    } else {
-      const paramsString = queryParams.toString();
-      if (paramsString) {
-        url += `?${paramsString}`;
-      }
-    }
+    const url = `${API_BASE}/trackings?${new URLSearchParams(queryParams).toString()}`;
+    console.log('[trackingApi] GET', url);
 
     const response = await axios.get(url);
     if (q) {
-      const searchTerm = q.toLowerCase();
-      response.data = response.data.filter(item => 
-        item.name.toLowerCase().includes(searchTerm) || 
-        item.id.toLowerCase().includes(searchTerm)
-      );
+      const searchTerm = String(q).toLowerCase();
+      response.data = response.data.filter(item => {
+        const name = String(item.name || '').toLowerCase();
+        const idStr = String(item.id || '').toLowerCase();
+        return name.includes(searchTerm) || idStr.includes(searchTerm);
+      });
     }
     return response;
+  },
+  
+  // Returns total number of items matching the filters in params
+  count: async (params = {}) => {
+    const { q, status, _sort = 'id', _order = 'asc', ...rest } = params;
+    const queryParams = {
+      _page: 1,
+      _limit: 1,
+      _sort,
+      _order,
+      ...(q && { q }),
+      ...(status && { status }),
+      ...rest
+    };
+    Object.keys(queryParams).forEach(key => 
+      (queryParams[key] === undefined || queryParams[key] === '') && delete queryParams[key]
+    );
+    const url = `${API_BASE}/trackings?${new URLSearchParams(queryParams).toString()}`;
+    const response = await axios.get(url);
+    const headerCount = response.headers?.['x-total-count'] || response.headers?.['X-Total-Count'];
+    if (headerCount) return Number(headerCount);
+    // Fallback: fetch all without pagination and apply same client-side search filter
+    const allParams = {
+      _sort,
+      _order,
+      ...(status && { status }),
+      ...rest
+    };
+    const allUrl = `${API_BASE}/trackings?${new URLSearchParams(allParams).toString()}`;
+    const allRes = await axios.get(allUrl);
+    let data = Array.isArray(allRes.data) ? allRes.data : [];
+    if (q) {
+      const searchTerm = String(q).toLowerCase();
+      data = data.filter(item => {
+        const name = String(item.name || '').toLowerCase();
+        const idStr = String(item.id || '').toLowerCase();
+        return name.includes(searchTerm) || idStr.includes(searchTerm);
+      });
+    }
+    return data.length;
   },
   
   getById: async (id) => {
