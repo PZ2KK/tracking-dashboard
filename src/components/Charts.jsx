@@ -81,10 +81,10 @@ const Charts = () => {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 px-2 sm:px-0">
       <div className="bg-white p-4 rounded-lg shadow">
-        <h3 className="text-lg font-medium mb-4">Tracking Status Distribution</h3>
-        <div className="h-64">
+        <h3 className="text-md sm:text-lg font-medium mb-4">Tracking Status Distribution</h3>
+        <div className="h-36 sm:h-64">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
@@ -93,80 +93,116 @@ const Charts = () => {
                 cy="50%"
                 labelLine={false}
                 label={({ name, percent }) =>
-                    window.innerWidth >= 768
+                    window.innerWidth >= 640
                       ? `${name}: ${(percent * 100).toFixed(0)}%`
                       : null
                   }
-                outerRadius={80}
+                outerRadius={window.innerWidth < 640 ? '70%' : 80}
                 fill="#8884d8"
                 dataKey="count"
                 paddingAngle={5}
-                innerRadius={60}
+                innerRadius={window.innerWidth < 640 ? '40%' : 60}
                 isAnimationActive={false}
               >
                 {chartData.statusCounts.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
-              <Tooltip />
-              <Legend layout="vertical" align="right" verticalAlign="middle" wrapperStyle={{ paddingLeft: '20px' }} />
+              <Tooltip 
+                contentStyle={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '0.5rem',
+                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                  fontSize: window.innerWidth < 640 ? '12px' : '14px'
+                }}
+              />
+              <Legend 
+                layout={window.innerWidth < 640 ? 'vertical' : 'vertical'}
+                align={window.innerWidth < 640 ? 'left' : 'right'}
+                verticalAlign={window.innerWidth < 640 ? 'middle' : 'middle'}
+                wrapperStyle={{ 
+                  paddingLeft: window.innerWidth < 640 ? '0' : '20px',
+                  paddingTop: window.innerWidth < 640 ? '10px' : '0'
+                }}
+                iconSize={window.innerWidth < 640 ? 10 : 12}
+              />
             </PieChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded-lg shadow mt-8">
-        <h3 className="text-lg font-medium mb-4">Monthly Tracking Volume</h3>
-        <div className="h-80">
+      <div className="bg-white p-4 rounded-lg shadow">
+        <h3 className="text-md sm:text-lg font-medium mb-4">Monthly Tracking Volume</h3>
+        <div className="h-48 sm:h-80">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               data={chartData.monthlyCounts}
               margin={{
                 top: 5,
-                right: 30,
-                left: 20,
-                bottom: 5,
+                right: window.innerWidth < 640 ? 10 : 30,
+                left: window.innerWidth < 640 ? 10 : 20,
+                bottom: window.innerWidth < 640 ? 0 : 5,
               }}
             >
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis 
                 dataKey="month" 
-                tick={{ fill: '#6b7280' }}
+                tick={{ 
+                  fill: '#6b7280',
+                  fontSize: window.innerWidth < 640 ? '10px' : '12px'
+                }}
                 tickMargin={10}
+                tickFormatter={(value) => {
+                  if (window.innerWidth < 640) {
+                    const [year, month] = value.split('-')
+                    return `${month}/${year.slice(2)}`
+                  }
+                  return value;
+                }}
               />
               <YAxis 
-                tick={{ fill: '#6b7280' }}
+                tick={{ 
+                  fill: '#6b7280',
+                  fontSize: window.innerWidth < 640 ? '10px' : '12px'
+                }}
                 tickMargin={10}
+                width={window.innerWidth < 640 ? 30 : 40}
               />
               <Tooltip 
                 contentStyle={{
                   backgroundColor: 'rgba(255, 255, 255, 0.95)',
                   border: '1px solid #e5e7eb',
                   borderRadius: '0.5rem',
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                  fontSize: window.innerWidth < 640 ? '12px' : '14px'
                 }}
               />
               <Legend 
                 layout="horizontal" 
                 verticalAlign="top" 
                 align="center"
-                wrapperStyle={{ paddingBottom: '20px' }}
+                wrapperStyle={{ 
+                  paddingBottom: '20px',
+                  fontSize: window.innerWidth < 640 ? '12px' : '14px'
+                }}
+                iconSize={window.innerWidth < 640 ? 10 : 12}
               />
               <Line 
                 type="monotone" 
                 dataKey="count" 
                 name="Number of Trackings"
                 stroke="#8884d8" 
-                strokeWidth={3}
+                strokeWidth={window.innerWidth < 640 ? 2 : 3}
                 isAnimationActive={false}
                 dot={{
                   fill: '#8884d8',
                   stroke: '#fff',
-                  strokeWidth: 2,
-                  r: 5,
-                  activeDot: { r: 8 }
+                  strokeWidth: window.innerWidth < 640 ? 1 : 2,
+                  r: window.innerWidth < 640 ? 3 : 5,
+                  activeDot: { r: window.innerWidth < 640 ? 5 : 8 }
                 }}
-                activeDot={{ r: 8 }}
+                activeDot={{ r: window.innerWidth < 640 ? 5 : 8 }}
               />
             </LineChart>
           </ResponsiveContainer>

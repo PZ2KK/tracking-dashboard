@@ -42,7 +42,7 @@ export default function Login() {
   };
 
   return (
-    <div className="flex flex-col h-screen items-center justify-center bg-gray-100">
+    <div className="flex flex-col h-screen items-center justify-center">
       <div className="flex items-center gap-2 p-12 text-3xl">
         <span>
           <BsFillBoxFill />

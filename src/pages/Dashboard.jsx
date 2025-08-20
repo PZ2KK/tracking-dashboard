@@ -119,37 +119,36 @@ export default function Dashboard() {
   }, [loading, hasMore, fetchTrackings, searchParams, trackings.length]);
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="w-full">
       <Header
         onSearch={handleSearch}
         onFilter={handleFilter}
         onSort={handleSort}
       />
       <div className="flex flex-col md:flex-row md:justify-between">
-        <div className="w-1/2 min-w-[400px] mx-auto px-6">
+        <div className="w-full md:w-1/2 md:min-w-[400px] mx-auto px-6 mb-6 md:mb-0">
           <Charts />
         </div>
-        <div className="w-1/2 min-w-[400px] mx-auto px-6">
+        <div className="w-full md:w-1/2 md:min-w-[400px] mx-auto px-6">
           <div className="mb-2 text-sm text-gray-600">
             Showing {trackings.length} of {totalCount} items
           </div>
 
           {error && <div className="p-4 text-red-500">{error}</div>}
-
-          <TrackingList
-            items={trackings}
-            hasMore={hasMore}
-            loadMoreItems={loadMoreItems}
-            isLoading={loading}
-          />
-
+          <div className="flex-1 min-h-[400px]">
+            <TrackingList
+              items={trackings}
+              hasMore={hasMore}
+              loadMoreItems={loadMoreItems}
+              isLoading={loading}
+            />
+          </div>
           {!loading && trackings.length === 0 && !error && (
             <div className="p-8 text-center text-gray-500">
               No tracking items found.
             </div>
           )}
         </div>
-        
       </div>
     </div>
   );

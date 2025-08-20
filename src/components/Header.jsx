@@ -56,11 +56,11 @@ export default function Header({ onSearch, onFilter, onSort }) {
   }, [query]);
 
   return (
-    <header ref={containerRef} className="bg-white shadow px-4 py-3 mb-4">
+    <header ref={containerRef} className="bg-white shadow px-6 py-3 mb-6">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-2">
           <span className="text-xl"><BsFillBoxFill /></span>
-          <h2 className="text-lg font-semibold">Tracking Dashboard</h2>
+          <h2 className="hidden md:block md:text-lg font-semibold">Tracking Dashboard</h2>
         </div>
 
         {/* Search bar */}
@@ -68,7 +68,7 @@ export default function Header({ onSearch, onFilter, onSort }) {
           <input
             type="text"
             placeholder="Search by name or ID..."
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0"
+            className="w-full text-xs md:text-sm p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-0"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onFocus={() => setShowFilters(true)}
