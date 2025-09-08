@@ -4,5 +4,6 @@ body {
   min-height: 100vh;
   min-width: 100vw;
   background-color: #f5f5f5;
-  overflow: hidden;
+  overflow-x: hidden; /* prevent horizontal scroll */
+  overflow-y: auto;   /* allow vertical scrolling */
 }
